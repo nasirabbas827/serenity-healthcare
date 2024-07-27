@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2024 at 08:58 AM
+-- Generation Time: Jul 27, 2024 at 09:59 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -72,7 +72,7 @@ CREATE TABLE `bills` (
   `patient_id` int(11) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `bill_date` datetime NOT NULL,
-  `bill_type` enum('appointment','medical','diagnostic','all') NOT NULL,
+  `bill_type` enum('appointment','medical','diagnostic','all','outdoor') NOT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -81,7 +81,7 @@ CREATE TABLE `bills` (
 --
 
 INSERT INTO `bills` (`bill_id`, `patient_id`, `amount`, `bill_date`, `bill_type`, `description`) VALUES
-(1, 1, 122.99, '2024-05-31 10:49:00', 'all', 'dfad'),
+(1, 1, 122.99, '2024-05-31 10:49:00', 'outdoor', 'dfad'),
 (2, 1, 123.00, '2024-05-31 11:36:00', 'appointment', 'dsarek');
 
 -- --------------------------------------------------------
@@ -165,15 +165,16 @@ CREATE TABLE `patients` (
   `email` varchar(100) NOT NULL,
   `phone` varchar(15) NOT NULL,
   `age` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('indoor','outdoor') NOT NULL DEFAULT 'indoor'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `patients`
 --
 
-INSERT INTO `patients` (`id`, `username`, `password`, `email`, `phone`, `age`, `created_at`) VALUES
-(1, 'patient', '$2y$10$IqveRPNE2KkEdcI5Q0caj.N0zsz74rJcVPc5YTs.XRfx3iGRiowHW', 'patient@gmail.com', '21', 23, '2024-05-31 04:43:47');
+INSERT INTO `patients` (`id`, `username`, `password`, `email`, `phone`, `age`, `created_at`, `status`) VALUES
+(1, 'patient', '$2y$10$IqveRPNE2KkEdcI5Q0caj.N0zsz74rJcVPc5YTs.XRfx3iGRiowHW', 'patient@gmail.com', '21', 23, '2024-05-31 04:43:47', 'indoor');
 
 -- --------------------------------------------------------
 

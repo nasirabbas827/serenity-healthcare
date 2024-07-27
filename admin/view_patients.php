@@ -36,6 +36,7 @@ $result = mysqli_query($conn, $sql);
                     <th>Patient ID</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -45,6 +46,7 @@ $result = mysqli_query($conn, $sql);
                     <td><?php echo $row['id']; ?></td>
                     <td><?php echo $row['username']; ?></td>
                     <td><?php echo $row['email']; ?></td>
+                    <td><?php echo $row['status']; ?></td>
                     <td>
                         <a href="view_medical_history.php?id=<?php echo $row['id']; ?>" class="btn btn-outline-dark">View Medical History</a>
                     </td>

@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bill_id = $_POST['bill_id'];
     $amount = $_POST['amount'];
     $bill_type = $_POST['bill_type'];
-    $description = $_POST['description']; // Added for description
+    $description = $_POST['description'];
 
     $update_sql = "UPDATE Bills SET amount = ?, bill_type = ?, description = ? WHERE bill_id = ?";
     if ($stmt = mysqli_prepare($conn, $update_sql)) {
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch all bills from the database
-$sql = "SELECT b.bill_id, p.username AS patient_name, b.amount, b.bill_date, b.bill_type, b.description
+$sql = "SELECT b.bill_id, p.username AS patient_name, p.status AS patient_status, b.amount, b.bill_date, b.bill_type, b.description
         FROM Bills b
         INNER JOIN Patients p ON b.patient_id = p.id";
 $result = mysqli_query($conn, $sql);
@@ -55,6 +55,7 @@ $result = mysqli_query($conn, $sql);
                 <tr>
                     <th>Bill ID</th>
                     <th>Patient Name</th>
+                    <th>Patient Status</th> <!-- Added this column -->
                     <th>Amount</th>
                     <th>Bill Date</th>
                     <th>Bill Type</th>
@@ -67,6 +68,7 @@ $result = mysqli_query($conn, $sql);
                 <tr>
                     <td><?php echo $row['bill_id']; ?></td>
                     <td><?php echo $row['patient_name']; ?></td>
+                    <td><?php echo ucfirst($row['patient_status']); ?></td> <!-- Display status -->
                     <td><?php echo $row['amount']; ?></td>
                     <td><?php echo $row['bill_date']; ?></td>
                     <td><?php echo ucfirst($row['bill_type']); ?></td>
@@ -109,6 +111,7 @@ $result = mysqli_query($conn, $sql);
                             <option value="medical">Medical</option>
                             <option value="diagnostic">Diagnostic</option>
                             <option value="all">All</option>
+                            <option value="outdoor">Outdoor Patient Fee</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -142,8 +145,7 @@ $result = mysqli_query($conn, $sql);
 $(document).ready(function() {
     $('#billsTable').DataTable({
         dom: 'Bfrtip',
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
     });
 
     $('#editBillModal').on('show.bs.modal', function(event) {

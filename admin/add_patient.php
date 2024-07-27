@@ -9,8 +9,8 @@ if (!isset($_SESSION["usertype"]) || $_SESSION["usertype"] !== "admin") {
 }
 
 // define variables and initialize with empty values
-$username = $password = $email = $phone = $age = "";
-$username_err = $password_err = $email_err = $phone_err = $age_err = "";
+$username = $password = $email = $phone = $age = $status = "";
+$username_err = $password_err = $email_err = $phone_err = $age_err = $status_err = "";
 
 // check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -86,16 +86,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // validate status
+    if (empty(trim($_POST["status"]))) {
+        $status_err = "Please select a patient status.";
+    } else {
+        $status = trim($_POST["status"]);
+    }
+
     // if no errors, insert user into database
-    if (empty($username_err) && empty($password_err) && empty($email_err) && empty($phone_err) && empty($age_err)) {
-        $sql = "INSERT INTO patients (username, password, email, phone, age) VALUES (?, ?, ?, ?, ?)";
+    if (empty($username_err) && empty($password_err) && empty($email_err) && empty($phone_err) && empty($age_err) && empty($status_err)) {
+        $sql = "INSERT INTO patients (username, password, email, phone, age, status) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssssi", $param_username, $param_password, $param_email, $param_phone, $param_age);
+        mysqli_stmt_bind_param($stmt, "ssssss", $param_username, $param_password, $param_email, $param_phone, $param_age, $param_status);
         $param_username = $username;
         $param_password = password_hash($password, PASSWORD_DEFAULT);
         $param_email = $email;
         $param_phone = $phone;
         $param_age = $age;
+        $param_status = $status;
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
         mysqli_close($conn);
@@ -146,6 +154,15 @@ include('admin_navbar.php');
                 <label>Age</label>
                 <input type="number" name="age" class="form-control <?php echo (!empty($age_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $age; ?>">
                 <span class="invalid-feedback"><?php echo $age_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label>Patient Status</label>
+                <select name="status" class="form-control <?php echo (!empty($status_err)) ? 'is-invalid' : ''; ?>">
+                    <option value="">Select Status</option>
+                    <option value="indoor" <?php echo ($status == "indoor") ? 'selected' : ''; ?>>Indoor</option>
+                    <option value="outdoor" <?php echo ($status == "outdoor") ? 'selected' : ''; ?>>Outdoor</option>
+                </select>
+                <span class="invalid-feedback"><?php echo $status_err; ?></span>
             </div>
             <div class="form-group text-center">
                 <input type="submit" class="btn btn-primary" value="Register">

@@ -9,7 +9,7 @@ if (!isset($_SESSION["usertype"]) || $_SESSION["usertype"] !== "admin") {
 }
 
 // Fetch all patients
-$patients_sql = "SELECT id, username FROM patients";
+$patients_sql = "SELECT id, username, status FROM patients";
 $patients_result = mysqli_query($conn, $patients_sql);
 
 // Handle form submission to add a new bill
@@ -51,7 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <select class="form-control" id="patient_id" name="patient_id" required>
                 <option value="">Select Patient</option>
                 <?php while ($row = mysqli_fetch_assoc($patients_result)): ?>
-                    <option value="<?php echo $row['id']; ?>"><?php echo $row['username']; ?></option>
+                    <option value="<?php echo $row['id']; ?>">
+                        <?php echo $row['username']; ?> (<?php echo ucfirst($row['status']); ?>)
+                    </option>
                 <?php endwhile; ?>
             </select>
         </div>
@@ -71,15 +73,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="datetime-local" class="form-control" id="bill_date" name="bill_date" required>
         </div>
         <div class="form-group">
-    <label for="bill_type">Bill Type</label>
-    <select class="form-control" id="bill_type" name="bill_type" required>
-        <option value="appointment">Appointment</option>
-        <option value="medical">Medical</option>
-        <option value="diagnostic">Diagnostic</option>
-        <option value="all">All</option>
-    </select>
-</div>
-<div class="form-group">
+            <label for="bill_type">Bill Type</label>
+            <select class="form-control" id="bill_type" name="bill_type" required>
+                <option value="appointment">Appointment</option>
+                <option value="medical">Medical</option>
+                <option value="diagnostic">Diagnostic</option>
+                <option value="all">All</option>
+                <option value="outdoor">Outdoor Patient Fee</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="description">Description</label>
             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>

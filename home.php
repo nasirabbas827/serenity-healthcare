@@ -11,10 +11,19 @@ if (!isset($_SESSION["id"]) || empty($_SESSION["id"])) {
 // Get the user ID from the session
 $user_id = $_SESSION["id"];
 
+// Fetch patient details including status
+$patient_sql = "SELECT username, status FROM Patients WHERE id = ?";
+if ($stmt = mysqli_prepare($conn, $patient_sql)) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $username, $status);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+}
+
 // Fetch all doctors from the database
 $sql = "SELECT * FROM doctors";
 $result = mysqli_query($conn, $sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -30,17 +39,23 @@ $result = mysqli_query($conn, $sql);
 <?php include('navbar.php'); ?>
 
 <div class="container mt-5">
-    <h2>Our Doctors</h2>
+    <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
+    <p>Your current status: <strong><?php echo ucfirst(htmlspecialchars($status)); ?></strong></p>
+    
+    <!-- Additional paragraph -->
+    <p>We are here to provide you with the best medical care and support. If you have any questions or need assistance, feel free to contact our staff. You can also make appointments with our experienced doctors using the button below. Your health and well-being are our top priorities.</p>
+
+    <h3>Our Doctors</h3>
     <div class="row">
         <?php while ($doctor = mysqli_fetch_assoc($result)): ?>
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <img src="admin/<?php echo $doctor['picture']; ?>" class="card-img-top" alt="Doctor Picture">
+                    <img src="admin/<?php echo htmlspecialchars($doctor['picture']); ?>" class="card-img-top" alt="Doctor Picture">
                     <div class="card-body">
-                        <h5 class="card-title"><?php echo $doctor['name']; ?></h5>
-                        <p class="card-text"><?php echo $doctor['specialization']; ?></p>
-                        <p class="card-text"><?php echo $doctor['duty_timings']; ?></p>
-                        <button class="btn btn-primary make-appointment-btn" data-toggle="modal" data-target="#appointmentModal" data-doctor-id="<?php echo $doctor['doctor_id']; ?>">Make Appointment</button>
+                        <h5 class="card-title"><?php echo htmlspecialchars($doctor['name']); ?></h5>
+                        <p class="card-text"><?php echo htmlspecialchars($doctor['specialization']); ?></p>
+                        <p class="card-text"><?php echo htmlspecialchars($doctor['duty_timings']); ?></p>
+                        <button class="btn btn-primary make-appointment-btn" data-toggle="modal" data-target="#appointmentModal" data-doctor-id="<?php echo htmlspecialchars($doctor['doctor_id']); ?>">Make Appointment</button>
                     </div>
                 </div>
             </div>
@@ -60,7 +75,7 @@ $result = mysqli_query($conn, $sql);
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="patient_id" value="<?php echo $user_id; ?>">
+                    <input type="hidden" name="patient_id" value="<?php echo htmlspecialchars($user_id); ?>">
                     <input type="hidden" name="doctor_id" id="doctor_id">
                     <div class="form-group">
                         <label for="appointment_date">Appointment Date</label>

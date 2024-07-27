@@ -9,7 +9,7 @@ if (!isset($_SESSION["usertype"]) || $_SESSION["usertype"] !== "admin") {
 }
 
 // Fetch all appointments from the database
-$sql = "SELECT a.appointment_id, a.appointment_date, a.status, p.username AS patient, d.name AS doctor 
+$sql = "SELECT a.appointment_id, a.appointment_date, a.status AS appointment_status, p.username AS patient, p.status AS patient_status, d.name AS doctor 
         FROM appointments a 
         JOIN patients p ON a.patient_id = p.id 
         JOIN doctors d ON a.doctor_id = d.doctor_id";
@@ -54,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <tr>
                 <th>Appointment ID</th>
                 <th>Patient</th>
+                <th>Patient Status</th>
                 <th>Doctor</th>
                 <th>Appointment Date</th>
                 <th>Status</th>
@@ -65,11 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <tr>
                     <td><?php echo $row['appointment_id']; ?></td>
                     <td><?php echo $row['patient']; ?></td>
+                    <td><?php echo ucfirst($row['patient_status']); ?></td>
                     <td><?php echo $row['doctor']; ?></td>
                     <td><?php echo $row['appointment_date']; ?></td>
-                    <td><?php echo ucfirst($row['status']); ?></td>
+                    <td><?php echo ucfirst($row['appointment_status']); ?></td>
                     <td>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editAppointmentModal" data-appointment-id="<?php echo $row['appointment_id']; ?>" data-appointment-date="<?php echo $row['appointment_date']; ?>" data-status="<?php echo $row['status']; ?>">Edit</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#editAppointmentModal" data-appointment-id="<?php echo $row['appointment_id']; ?>" data-appointment-date="<?php echo $row['appointment_date']; ?>" data-status="<?php echo $row['appointment_status']; ?>">Edit</button>
                     </td>
                 </tr>
             <?php endwhile; ?>

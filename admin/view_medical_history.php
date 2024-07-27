@@ -164,9 +164,9 @@ if ($stmt_bills = mysqli_prepare($conn, $sql_bills)) {
                 <tr>
                     <td><?php echo $row_bill['bill_id']; ?></td>
                     <td><?php echo $row_bill['description']; ?></td>
-                    <td><?php echo $row_bill['date']; ?></td>
+                    <td><?php echo $row_bill['bill_date']; ?></td>
                     <td><?php echo $row_bill['amount']; ?></td>
-                    <td><?php echo $row_bill['status']; ?></td>
+                    <td><?php echo $row_bill['bill_type']; ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
